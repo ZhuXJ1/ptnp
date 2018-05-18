@@ -80,5 +80,6 @@ xlabel('Combination of a pulsar pair')
 ylabel('Observation time, n/20 years')
 hcb = colorbar;
 ylabel(hcb,'SNR midsum: ?^2 S^2 / P^2')
+close all;
 
 return
