@@ -1,8 +1,10 @@
 function rad = dmsToRad(dms)
 % Angle convertion from degrees, minutes, seconds; to radians (-pi to pi)
+% dms can be multiple rows, where each row has 3 columns: dd, mm, ss.
 % [!!!] Assuming 1 minute = 1/60 of a degree, not of an hour.
 
-if length(dms)~=3
+szdms = size(dms);
+if szdms(2)~=3
   ermsg = 'Error: input angle should have length of 3: hours, minutes, seconds \n';
   error(ermsg);
 end

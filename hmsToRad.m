@@ -1,7 +1,9 @@
 function rad = hmsToRad(hms)
 % Angle convertion from hours, minutes, seconds; to radians
+% hms can be multiple rows, where each row has 3 columns: hh, mm, ss.
 
-if length(hms)~=3
+szhms = size(hms);
+if szhms(2)~=3
   ermsg = 'Error: input angle should have length of 3: hours, minutes, seconds \n';
   error(ermsg);
 end
