@@ -110,4 +110,15 @@ title('SNR(f) for IPTA pulsars, assuming fixed noise')
 print('-dpng','output/demo_ipta_SNRt');
 close all;
 
+% Detection probability
+% Eq.15 in Pablo Rosado's paper: https://arxiv.org/pdf/1503.04803.pdf
+alpha0=0.001;
+detprob = 0.5*erfc(erfcinv(2*alpha0)-SNRt/sqrt(2));
+
+plot(tyr,detprob)
+xlabel('T, years')
+ylabel('P_{det}')
+print('-dpng','output/demo_ipta_detprob')
+close all;
+
 return
