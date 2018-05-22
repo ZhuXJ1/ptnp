@@ -40,6 +40,11 @@ title('SNR for lowest available frequency f=1/T, T - obs. time');
 print('-dpng','output/demo_lgSNRlgt');
 close all;
 
+clear SNRt;
+clear SNRf;
+clear logSNRt;
+clear logSNRf;
+
 % Step 3. Demonstrating detection SNR(t) for 4 IPTA pulsars, using their
 % sky positions, assuming timing noise is 100 ns (down to 10ns)
 
@@ -74,12 +79,35 @@ end
 SNR = sqrt(2*sum(sum(midSNR)));
 fprintf('SNR = %i, for %i years of obs. with IPTA, noise PSD %i, and 4 pulsars \n',SNR,tobs,sigma_typical);
 
+% Shows how mid-sum-SNR (before summing over frequencies and pulsar pairs)
+% looks like for different pulsar pairs for IPTA.
+loglog(f,midSNR(:,1))
+hold on
+for ii=2:rdpsz(1)
+  hold on
+  loglog(f,midSNR(:,ii))
+end
+xlabel('Frequency, Hz')
+ylabel('SNR midsum: Gamma^2 S^2 / P^2')
+grid on
+print('-dpng','output/demo_ipta_SNRmidsum');
+close all;
 
-image(midSNR)
-xlabel('Combination of a pulsar pair')
-ylabel('Observation time, n/20 years')
-hcb = colorbar;
-ylabel(hcb,'SNR midsum: ?^2 S^2 / P^2')
+% Shows how SNR grows with time for IPTA.
+tyr = fliplr((1./f)/yr);
+midsum = sum(midSNR,2);
+for ii=1:hfb
+    SNRt(ii) = sqrt(2*sum(midsum(end-ii+1:end)));
+end
+logtyr = log10(tyr);
+logSNRt = log10(SNRt);
+
+loglog(logtyr,logSNRt)
+xlabel('log_{10}(T/yr)')
+ylabel('log_{10}SNR')
+grid on
+title('SNR(f) for IPTA pulsars, assuming fixed noise')
+print('-dpng','output/demo_ipta_SNRt');
 close all;
 
 return
