@@ -57,49 +57,19 @@ tobs = 20;
 tsam = 2*7*24*60*60; % Sampling time, two weeks between observations.
 
 f = b.ftso(tsam,tobs);
-[midSNR, SNR] = snrAstat(ra,dec,sigma_typical,tobs,tsam);
-fprintf('SNR = %i, for %i years of obs. with IPTA, noise PSD %i, and 4 pulsars \n',SNR,tobs,sigma_typical);
-
-% Shows how mid-sum-SNR (before summing over frequencies and pulsar pairs)
-% looks like for different pulsar pairs for IPTA.
-loglog(f,midSNR(:,1))
-hold on
-for ii=2:size(midSNR,2)
-  hold on
-  loglog(f,midSNR(:,ii))
-end
-xlabel('Frequency, Hz')
-ylabel('SNR midsum: Gamma^2 S^2 / P^2')
-grid on
-print('-dpng','output/demo_ipta_SNRmidsum');
-close all;
-
-% Shows how SNR grows with time for IPTA.
-tc.yr = fliplr((1./f)/c.yr);
-midsum = sum(midSNR,2);
-for ii=1:size(midSNR,1)
-    SNRt(ii) = sqrt(2*sum(midsum(end-ii+1:end)));
-end
-logtc.yr = log10(tc.yr);
-logSNRt = log10(SNRt);
-
-loglog(logtc.yr,logSNRt)
-xlabel('log_{10}(T/c.yr)')
-ylabel('log_{10}SNR')
-grid on
-title('SNR(f) for IPTA pulsars, assuming fixed noise')
-print('-dpng','output/demo_ipta_SNRt');
-close all;
+t = b.tfromf(f);
+[SNRa, midSNRa, SNRta] = snrAstat(ra,dec,sigma_typical,tobs,tsam);
+[SNRb, midSNRb, SNRtb] = snrBstat(ra,dec,sigma_typical,tobs,tsam);
+fprintf('A-statisic: SNR = %i, for %i years of obs. with PPTA, noise PSD %i, and 4 pulsars \n',SNRa,tobs,sigma_typical);
+fprintf('B-statisic: SNR = %i, for %i years of obs. with PPTA, noise PSD %i, and 4 pulsars \n',SNRb,tobs,sigma_typical);
 
 % Detection probability
 % Eq.15 in Pablo Rosado's paper: https://arxiv.org/pdf/1503.04803.pdf
 alpha0=0.001;
-detprob = 0.5*erfc(erfcinv(2*alpha0)-SNRt/sqrt(2));
+detprobA = 0.5*erfc(erfcinv(2*alpha0)-SNRta/sqrt(2));
+detprobB = 0.5*erfc(erfcinv(2*alpha0)-SNRtb/sqrt(2));
 
-plot(tc.yr,detprob)
-xlabel('T, years')
-ylabel('P_{det}')
-print('-dpng','output/demo_ipta_detprob')
-close all;
+mkSnrPlots(midSNRa,SNRta,detprobA,f,t,'ppta4_100ns_Astat','PPTA4, 100ns, A-stat.')
+mkSnrPlots(midSNRb,SNRtb,detprobB,f,t,'ppta4_100ns_Bstat','PPTA4, 100ns, B-stat.')
 
 return
