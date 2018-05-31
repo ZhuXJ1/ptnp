@@ -53,15 +53,16 @@ clear logSNRf;
 % Sky positions in hours, seconds, minutes
 ra = [04 37 15.8961747 ; 17 13 49.5327232 ; 17 44 29.405794 ; 19 09 47.4346740];
 dec = [47 15 09.11071 ; 07 47 37.49790 ; 11 34 54.6809 ; -37 44 14.46670];
+sigma = [100e-9 ; 100e-9 ; 100e-9 ; 100e-9];
 tobs = 20;
 tsam = 2*7*24*60*60; % Sampling time, two weeks between observations.
 
 f = b.ftso(tsam,tobs);
 t = b.tfromf(f);
-[SNRa, midSNRa, SNRta] = snrAstat(ra,dec,sigma_typical,tobs,tsam);
-[SNRb, midSNRb, SNRtb] = snrBstat(ra,dec,sigma_typical,tobs,tsam);
-fprintf('A-statisic: SNR = %i, for %i years of obs. with PPTA, noise PSD %i, and 4 pulsars \n',SNRa,tobs,sigma_typical);
-fprintf('B-statisic: SNR = %i, for %i years of obs. with PPTA, noise PSD %i, and 4 pulsars \n',SNRb,tobs,sigma_typical);
+[SNRa, midSNRa, SNRta] = snrAstat(ra,dec,sigma,tobs,tsam);
+[SNRb, midSNRb, SNRtb] = snrBstat(ra,dec,sigma,tobs,tsam);
+fprintf('A-statisic: SNR = %i, for %i years of obs. with PPTA, mean noise PSD %i, and 4 pulsars \n',SNRa,tobs,mean(sigma));
+fprintf('B-statisic: SNR = %i, for %i years of obs. with PPTA, mean noise PSD %i, and 4 pulsars \n',SNRb,tobs,mean(sigma));
 
 % Detection probability
 % Eq.15 in Pablo Rosado's paper: https://arxiv.org/pdf/1503.04803.pdf

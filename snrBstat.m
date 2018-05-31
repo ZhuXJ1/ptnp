@@ -26,7 +26,7 @@ for ii=1:length(f)
     midcos2 = cos( hmsToRad(ra(radeccomb(jj,1),:)) - hmsToRad(ra(radeccomb(jj,2),:)) );
     midcos3 = sin(dmsToRad(dec(radeccomb(jj,1),:)))*sin(dmsToRad(dec(radeccomb(jj,2),:)));
     costheta = midcos1*midcos2 + midcos3;
-    midSNR(ii,jj) = ( olf(costheta)*Sh0_model(f(ii)) )^2 ./ (sigma.^2 + Sh0_model(f(ii))*2*sigma + Sh0_model(f(ii))^2*(1+olf(costheta)^2) );
+    midSNR(ii,jj) = ( olf(costheta)*Sh0_model(f(ii)) )^2 ./ (sigma(radeccomb(jj,1))*sigma(radeccomb(jj,2)) + Sh0_model(f(ii))*(sigma(radeccomb(jj,1))+sigma(radeccomb(jj,2))) + Sh0_model(f(ii))^2*(1+olf(costheta)^2) );
   end
 end
 
